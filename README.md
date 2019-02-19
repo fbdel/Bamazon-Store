@@ -8,25 +8,25 @@ Bamazon is CLI store front that allows customers to order items from the invento
 
 ## Requirements
 
-**packages** 
+    **packages** 
 
-    -node inquire 
-    -node express 
-
-
-
-**Files**
-
-    -bamazonCustomer.js  
-
-    -Bschema.sql
-
-    -top10Products.csv
+        -node inquire 
+        -node express 
 
 
 
+    **Files**
 
-##Command Line Calls
+        -bamazonCustomer.js  
+
+        -Bschema.sql
+
+        -top10Products.csv
+
+
+
+
+## Command Line Calls
 
     -node bamazonCustomer.js
 
