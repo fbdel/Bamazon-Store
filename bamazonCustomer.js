@@ -4,6 +4,7 @@ var cTable = require("console.table");
 
 var finalTotal= 0;
 
+//Connects to Mysql Database 
 var connection = mysql.createConnection({
   host: "localhost",
 
@@ -23,14 +24,10 @@ connection.connect(function(err) {
   if (err) throw err;
   console.log("====================================================================\n");
   
-  start();
-
-
-    
-  
-  
+  start();  
 });
 
+//Function: Prompts user to decide wither to shop or not then, if yes initiates DisplayProduct()
 function start() {
     continueOrdering = false;
     
@@ -60,7 +57,7 @@ function start() {
     })
 }
 
-
+//Function displays inventory
 function displayProducts (){
     console.log("PRODUCTS");
     console.log(
@@ -95,8 +92,7 @@ function displayProducts (){
 }
 
 
-
-
+//Function that prompts order details (items and quantity) then processes the order.
 function runSearch() {
     
     inquirer
@@ -114,8 +110,6 @@ function runSearch() {
         }
       ])
       .then(function(answer) {
-        //   console.log(answer.num_items);
-        //   console.log(answer.id_search);
  
           connection.query("SELECT * FROM products", function (err, res) {
               var requestID = parseInt(answer.id_search) - 1;
@@ -123,15 +117,12 @@ function runSearch() {
 
               
               if (err) throw err;
-            //   console.log(requestID)
-            //   console.log(res[requestID].price);
-            //   console.log(res[requestID].stock_quantity);
-
+            
+              //Verify there is enough inventory
               if (res[requestID].stock_quantity >= answer.num_items) {
                 console.log("------------------------------------------")
                 console.log("Horray we have what you are looking for!!!\n")
                 var updatedStock = res[requestID].stock_quantity - answer.num_items;
-                // console.log("UpdatedStock var is " + updatedStock)
                 console.log("");
                 console.log("Processing " + answer.num_items + " "+res[requestID].product_name + "(s)...\n");
 
@@ -139,7 +130,7 @@ function runSearch() {
                 console.log("Your Order Has Been Completed. \n")
                 console.log("Your current Total is: $" + finalTotal+"\n");
 
-              
+                //Update Database
                 var query = connection.query(                    
                     "UPDATE products SET ? WHERE ?",
                     [
@@ -155,8 +146,7 @@ function runSearch() {
                         
                         
                     },
-                    // console.log("Process is complete, thanks for your patients\n"),
-                    // console.log("Your total is: $" + res[requestID].price+ "\n"),
+
                     start()
                     
                 );
@@ -184,54 +174,30 @@ function runSearch() {
 
 
 
-function continueShopping() {
+// function continueShopping() {
     
-    inquirer.prompt({
-        name: "start",
-        type: "input",
-        message: "Would you like to continue shop? (Y/N) "
+//     inquirer.prompt({
+//         name: "start",
+//         type: "input",
+//         message: "Would you like to continue shop? (Y/N) "
 
-    }).then(function (answer) {
-        if (answer.start === "Y" || answer.start === "y") {
-            // console.log("")
-            // console.log("What esle would you like to order?\n")
-            start()
-
-
-        } else if (answer.start === "N" || answer.start === "n") {
-            console.log("Your FINAL Total for today is: $" + finalTotal)
-            console.log("Thanks for shopping at Bamazon.")
-            console.log("Bye for now!")
-            connection.end();
-
-        }
-    })
-}
+//     }).then(function (answer) {
+//         if (answer.start === "Y" || answer.start === "y") {
+//             // console.log("")
+//             // console.log("What esle would you like to order?\n")
+//             start()
 
 
+//         } else if (answer.start === "N" || answer.start === "n") {
+//             console.log("Your FINAL Total for today is: $" + finalTotal)
+//             console.log("Thanks for shopping at Bamazon.")
+//             console.log("Bye for now!")
+//             connection.end();
 
-
-
-// function updateDatabase() {
-//     console.log("Processing order...\n");
-//     var query = connection.query(
-//       "UPDATE products SET ? WHERE ?",
-//       [
-//         {
-//           stock_quantity: updatedStock
-//         },
-//         {
-//           item_id: answer.id_search
 //         }
-//       ],
-//       function(err, res) {
-//         if (error) throw error;
-//         console.log ("Process is complete, thanks for your patients")
-//         console.log(res.affectedRows + " products updated!\n");
-//       }
-//     );
-
-//     // logs the actual query being run
-//     console.log(query.sql);
+//     })
 // }
+
+
+
 
